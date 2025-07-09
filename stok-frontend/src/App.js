@@ -58,7 +58,8 @@ function SalesTerminal({ showModal }) {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (!barcodeInput) return;
-            axios.get(`http://127.0.0.1:5000/api/products/by-barcode/${barcodeInput}`)
+            // GÜNCELLENDİ: URL canlı sunucu adresine çevrildi
+            axios.get(`https://muratkya244.pythonanywhere.com/api/products/by-barcode/${barcodeInput}`)
                 .then(res => {
                     addProductToBasket(res.data);
                     setBarcodeInput('');
@@ -77,7 +78,8 @@ function SalesTerminal({ showModal }) {
         const saleData = { basket: basket.map(item => ({ id: item.id, quantity: item.quantity, isim: item.isim })) };
         showModal('Satışı Onayla', 'Sepetteki ürünlerin satışını tamamlamak istediğinizden emin misiniz?',
         () => {
-            axios.post('http://127.0.0.1:5000/api/sales/bulk', saleData)
+            // GÜNCELLENDİ: URL canlı sunucu adresine çevrildi
+            axios.post('https://muratkya244.pythonanywhere.com/api/sales/bulk', saleData)
                 .then(res => {
                     showModal('Başarılı', res.data.mesaj);
                     clearBasket();
@@ -278,7 +280,7 @@ function SalesReport({ showModal }) {
 }
 
 // ######################################################################
-// # ANA UYGULAMA BİLEŞENİ (YÖNETİCİ) - GÜNCELLENDİ
+// # ANA UYGULAMA BİLEŞENİ (YÖNETİCİ)
 // ######################################################################
 function App() {
     const [activeView, setActiveView] = useState('salesTerminal');
@@ -311,7 +313,7 @@ function App() {
                         </header>
                         <main>{renderView()}</main>
                     </div>
-                    {/* GÜNCELLEME: Ana modal en sona taşındı, böylece her zaman en üstte görünür. */}
+                    {/* Ana modal en sona taşındı, böylece her zaman en üstte görünür. */}
                     <Modal isOpen={modalState.isOpen} onClose={closeModal} onConfirm={modalState.onConfirm ? handleConfirm : null} title={modalState.title}>
                         <p>{modalState.message}</p>
                     </Modal>

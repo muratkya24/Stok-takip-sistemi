@@ -25,7 +25,8 @@ export function ReportProvider({ children, showModal, isActive }) {
             return;
         }
         setLoading(true);
-        axios.get(`http://127.0.0.1:5000/api/sales?date=${selectedDate}`)
+        // GÜNCELLENDİ: URL canlı sunucu adresine çevrildi
+        axios.get(`https://muratkya244.pythonanywhere.com/api/sales?date=${selectedDate}`)
             .then(res => setSales(res.data))
             .catch(err => {
                 console.error("Satış raporu alınırken hata oluştu!", err);
@@ -63,10 +64,10 @@ export function ReportProvider({ children, showModal, isActive }) {
         });
     }, [sales]);
 
-    // GÜNCELLENDİ: İade fonksiyonu artık adet bilgisi alıyor ve yeni endpoint'e istek atıyor.
     const handleReturn = (saleId, quantity, successCallback) => {
         const returnData = { sale_id: saleId, quantity: quantity };
-        axios.post('http://127.0.0.1:5000/api/sales/return', returnData)
+        // GÜNCELLENDİ: URL canlı sunucu adresine çevrildi
+        axios.post('https://muratkya244.pythonanywhere.com/api/sales/return', returnData)
             .then(res => {
                 showModal('Başarılı', res.data.mesaj);
                 fetchSales(); // Verileri yenile

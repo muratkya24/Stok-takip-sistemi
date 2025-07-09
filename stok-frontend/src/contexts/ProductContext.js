@@ -1,20 +1,15 @@
 import React, { createContext, useState, useContext, useCallback, useMemo, useEffect } from 'react';
 import axios from 'axios';
 
-// 1. Context'i oluştur
 const ProductContext = createContext();
 
-// 2. Kolay kullanım için hook'u oluştur
 export function useProduct() {
   return useContext(ProductContext);
 }
 
-// Form için başlangıç state'i
 const initialFormState = {isim: '', barcode: '', renk: '', beden: '', stokadedi: '',alisfiyati: '', satisfiyati: '', cinsiyet: ''};
 
-// 3. Provider'ı oluştur
 export function ProductProvider({ children, showModal, isActive }) {
-    // Stok yönetimi sayfasının tüm state'leri artık burada
     const [groupedProducts, setGroupedProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState(initialFormState);
@@ -22,16 +17,15 @@ export function ProductProvider({ children, showModal, isActive }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selections, setSelections] = useState({});
 
-    // Fonksiyonların hepsi de buraya taşındı
     const fetchGroupedProducts = useCallback(() => {
         setLoading(true);
-        axios.get('http://127.0.0.1:5000/api/grouped-products')
+        // GÜNCELLENDİ: URL canlı sunucu adresine çevrildi
+        axios.get('https://muratkya244.pythonanywhere.com/api/grouped-products')
             .then(res => setGroupedProducts(res.data))
             .catch(err => showModal('Hata', 'Gruplanmış ürünler yüklenemedi.'))
             .finally(() => setLoading(false));
     }, [showModal]);
 
-    // Sadece bu sekme aktif olduğunda ürünleri çekmek için
     useEffect(() => {
         if (isActive) {
             fetchGroupedProducts();
@@ -86,7 +80,11 @@ export function ProductProvider({ children, showModal, isActive }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const apiCall = editingProductId ? axios.put(`http://127.0.0.1:5000/api/products/${editingProductId}`, formData) : axios.post('http://127.0.0.1:5000/api/products', formData);
+        // GÜNCELLENDİ: URL'ler canlı sunucu adresine çevrildi
+        const apiCall = editingProductId 
+            ? axios.put(`https://muratkya244.pythonanywhere.com/api/products/${editingProductId}`, formData) 
+            : axios.post('https://muratkya244.pythonanywhere.com/api/products', formData);
+            
         apiCall.then(res => {
             showModal('Başarılı', res.data.mesaj);
             fetchGroupedProducts(); 
@@ -97,7 +95,8 @@ export function ProductProvider({ children, showModal, isActive }) {
     };
 
     const handleGenerateBarcode = () => {
-        axios.get('http://127.0.0.1:5000/api/generate-barcode')
+        // GÜNCELLENDİ: URL canlı sunucu adresine çevrildi
+        axios.get('https://muratkya244.pythonanywhere.com/api/generate-barcode')
             .then(res => setFormData({ ...formData, barcode: res.data.barcode }))
             .catch(err => showModal('Hata', 'Barkod üretilemedi.'));
     };
@@ -105,7 +104,8 @@ export function ProductProvider({ children, showModal, isActive }) {
     const handleDelete = (productId, productName) => {
         showModal('Ürünü Sil', `"${productName}" adlı ürünü kalıcı olarak silmek istediğinizden emin misiniz?`,
         () => {
-            axios.delete(`http://127.0.0.1:5000/api/products/${productId}`)
+            // GÜNCELLENDİ: URL canlı sunucu adresine çevrildi
+            axios.delete(`https://muratkya244.pythonanywhere.com/api/products/${productId}`)
                 .then(res => { showModal('Başarılı', res.data.mesaj); fetchGroupedProducts(); })
                 .catch(err => showModal('Hata', `Ürün silinemedi: ${err.response?.data?.hata || 'Bilinmeyen hata.'}`));
         });
@@ -117,7 +117,6 @@ export function ProductProvider({ children, showModal, isActive }) {
         return groupedProducts.filter(group => group.urun_ismi.toLowerCase().includes(lowercasedTerm) || group.varyasyonlar.some(variant => variant.barcode === searchTerm));
     }, [searchTerm, groupedProducts]);
 
-    // Tüm state ve fonksiyonları dışarıya aç
     const value = {
         groupedProducts, loading, formData, editingProductId, searchTerm, setSearchTerm,
         selections, fetchGroupedProducts, handleSelectionChange, handleInputChange,
