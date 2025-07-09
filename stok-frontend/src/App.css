@@ -355,3 +355,48 @@ body {
     from { opacity: 0; transform: scale(0.95); }
     to { opacity: 1; transform: scale(1); }
 }
+/* --- YENİ: Login Ekranı Stilleri --- */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+.login-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 3rem;
+}
+
+.login-box .app-title {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.login-box .form-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+}
+
+.login-box .form-buttons {
+    justify-content: center;
+}
+
+.login-box .form-buttons button {
+    width: 100%;
+}
+
+.error-message {
+    color: var(--danger-color);
+    background-color: #fee2e2;
+    border: 1px solid var(--danger-color);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
